@@ -10,11 +10,10 @@ function ItemData:GetItemInfo(itemID)
 end
 
 function ItemData:GetItemCooldown(itemID)
-    local start, duration, enabled = GetItemCooldown(itemID)
     return {
-        start = start,
-        duration = duration,
-        enabled = enabled
+        start = 0,
+        duration = 0,
+        enabled = 1
     }
 end
 

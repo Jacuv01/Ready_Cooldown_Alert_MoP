@@ -38,7 +38,31 @@ function CooldownData:GetItemCooldownDetails(itemID, extraData)
         texture = GetItemInfo(itemID) and select(10, GetItemInfo(itemID))
     }
     
-    local start, duration, enabled = C_Item.GetItemCooldown(itemID)
+
+    local start, duration, enabled = 0, 0, 1
+
+    if extraData and extraData.slot then
+        start, duration, enabled = GetActionCooldown(extraData.slot)
+    else
+        for bag = 0, 4 do
+            for slot = 1, GetContainerNumSlots(bag) or 0 do
+                local bagItemID = GetContainerItemID(bag, slot)
+                if not bagItemID then
+                    local itemLink = GetContainerItemLink(bag, slot)
+                    if itemLink then
+                        bagItemID = tonumber(itemLink:match("item:(%d+)"))
+                    end
+                end
+                
+                if bagItemID == itemID then
+                    start, duration = GetContainerItemCooldown(bag, slot)
+                    enabled = 1
+                    break
+                end
+            end
+            if duration and duration > 0 then break end
+        end
+    end
     
     return {
         name = itemInfo.name,
