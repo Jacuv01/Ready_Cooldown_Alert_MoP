@@ -2,7 +2,7 @@
 ## Title: Ready Cooldown Alert (MoP)
 ## Notes: Alerts you when your abilities are ready to use. (Mists of Pandaria compatible)
 ## Author: Jacuv
-## Version: 1.0.0-MoP
+## Version: 1.0.1-MoP
 ## SavedVariables: ReadyCooldownAlertDB
 ## X-Curse-Project-ID: 1324314
 ## X-Wago-ID: E6gLb4K1
