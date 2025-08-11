@@ -73,6 +73,11 @@ function FiltersUI:CreateInvertCheckbox()
     invertCheckbox:SetScript("OnClick", function()
         if ReadyCooldownAlertDB then
             ReadyCooldownAlertDB.invertIgnored = invertCheckbox:GetChecked()
+            
+            local FilterProcessor = rawget(_G, "FilterProcessor")
+            if FilterProcessor and FilterProcessor.RefreshFilters then
+                FilterProcessor:RefreshFilters()
+            end
         end
     end)
     
@@ -244,6 +249,11 @@ function FiltersUI:AddValidatedFilter(name, spellId)
     table.insert(currentFilters, filterKey)
     ReadyCooldownAlertDB.ignoredSpells = table.concat(currentFilters, ",")
     self:RefreshFiltersList()
+    
+    local FilterProcessor = rawget(_G, "FilterProcessor")
+    if FilterProcessor and FilterProcessor.RefreshFilters then
+        FilterProcessor:RefreshFilters()
+    end
 end
 
 function FiltersUI:ShowSuggestions(searchText)
@@ -448,12 +458,22 @@ function FiltersUI:RemoveFilter(index)
     table.remove(filters, index)
     ReadyCooldownAlertDB.ignoredSpells = table.concat(filters, ",")
     self:RefreshFiltersList()
+    
+    local FilterProcessor = rawget(_G, "FilterProcessor")
+    if FilterProcessor and FilterProcessor.RefreshFilters then
+        FilterProcessor:RefreshFilters()
+    end
 end
 
 function FiltersUI:ClearAllFilters()
     if ReadyCooldownAlertDB then
         ReadyCooldownAlertDB.ignoredSpells = ""
         self:RefreshFiltersList()
+        
+        local FilterProcessor = rawget(_G, "FilterProcessor")
+        if FilterProcessor and FilterProcessor.RefreshFilters then
+            FilterProcessor:RefreshFilters()
+        end
     end
 end
 

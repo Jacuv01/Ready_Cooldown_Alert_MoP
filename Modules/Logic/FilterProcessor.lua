@@ -12,10 +12,16 @@ function FilterProcessor:RefreshFilters()
         ignoredSpells = {}
         
         local spellString = ReadyCooldownAlertDB.ignoredSpells
-        for spellName in string.gmatch(spellString, "([^,]+)") do
-            local trimmedName = string.gsub(spellName, "^%s*(.-)%s*$", "%1")
-            if trimmedName ~= "" then
-                ignoredSpells[trimmedName] = true
+        for spellEntry in string.gmatch(spellString, "([^,]+)") do
+            local trimmedEntry = string.gsub(spellEntry, "^%s*(.-)%s*$", "%1")
+            if trimmedEntry ~= "" then
+                local name, id = trimmedEntry:match("^(.+):(%d+)$")
+                if name and id then
+                    ignoredSpells[name] = true
+                    ignoredSpells[id] = true
+                else
+                    ignoredSpells[trimmedEntry] = true
+                end
             end
         end
         
@@ -75,10 +81,16 @@ function FilterProcessor:SetIgnoredSpellsString(spellString)
     ignoredSpells = {}
     
     if spellString and spellString ~= "" then
-        for spellName in string.gmatch(spellString, "([^,]+)") do
-            local trimmedName = string.gsub(spellName, "^%s*(.-)%s*$", "%1")
-            if trimmedName ~= "" then
-                ignoredSpells[trimmedName] = true
+        for spellEntry in string.gmatch(spellString, "([^,]+)") do
+            local trimmedEntry = string.gsub(spellEntry, "^%s*(.-)%s*$", "%1")
+            if trimmedEntry ~= "" then
+                local name, id = trimmedEntry:match("^(.+):(%d+)$")
+                if name and id then
+                    ignoredSpells[name] = true
+                    ignoredSpells[id] = true
+                else
+                    ignoredSpells[trimmedEntry] = true
+                end
             end
         end
     end
