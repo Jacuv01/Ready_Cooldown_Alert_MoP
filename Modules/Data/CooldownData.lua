@@ -1,5 +1,17 @@
 local CooldownData = {}
 
+local itemCooldownCache = {}
+
+function CooldownData:CacheItemCooldown(itemID, duration)
+    if itemID and duration and duration > 0 then
+        itemCooldownCache[itemID] = duration
+    end
+end
+
+function CooldownData:GetCachedItemCooldown(itemID)
+    return itemCooldownCache[itemID] or 0
+end
+
 function CooldownData:GetCooldownDetails(id, actionType, extraData)
     if actionType == "spell" then
         return self:GetSpellCooldownDetails(id)
@@ -38,29 +50,52 @@ function CooldownData:GetItemCooldownDetails(itemID, extraData)
         texture = GetItemInfo(itemID) and select(10, GetItemInfo(itemID))
     }
     
-
     local start, duration, enabled = 0, 0, 1
 
     if extraData and extraData.slot then
         start, duration, enabled = GetActionCooldown(extraData.slot)
     else
-        for bag = 0, 4 do
-            for slot = 1, GetContainerNumSlots(bag) or 0 do
-                local bagItemID = GetContainerItemID(bag, slot)
-                if not bagItemID then
-                    local itemLink = GetContainerItemLink(bag, slot)
-                    if itemLink then
-                        bagItemID = tonumber(itemLink:match("item:(%d+)"))
+        local spellName, spellID = GetItemSpell(itemID)
+        if spellID then
+            start, duration, enabled = GetSpellCooldown(spellID)
+        end
+        
+        if duration == 0 then
+            for bag = 0, 4 do
+                local numSlots = 32
+                for slot = 1, numSlots do
+                    local bagItemID = GetContainerItemID and GetContainerItemID(bag, slot)
+                    if not bagItemID then
+                        local itemLink = GetContainerItemLink and GetContainerItemLink(bag, slot)
+                        if itemLink then
+                            bagItemID = tonumber(itemLink:match("item:(%d+)"))
+                        end
+                    end
+                    
+                    if bagItemID == itemID then
+                        start, duration = GetContainerItemCooldown and GetContainerItemCooldown(bag, slot) or 0, 0
+                        enabled = 1
+                        
+                        if duration and duration > 0 then
+                            self:CacheItemCooldown(itemID, duration)
+                        else
+                            local cachedDuration = self:GetCachedItemCooldown(itemID)
+                            if cachedDuration > 0 then
+                                duration = cachedDuration
+                            end
+                        end
+                        
+                        break
+                    elseif not bagItemID and slot > 16 then
+                        break
                     end
                 end
-                
-                if bagItemID == itemID then
-                    start, duration = GetContainerItemCooldown(bag, slot)
-                    enabled = 1
-                    break
-                end
+                if duration and duration > 0 then break end
             end
-            if duration and duration > 0 then break end
+        end
+        
+        if duration == 0 then
+            duration = self:GetCachedItemCooldown(itemID)
         end
     end
     
@@ -123,7 +158,8 @@ function CooldownData:IsValidForTracking(cooldownDetails, minDuration)
     return cooldownDetails and 
            cooldownDetails.enabled and cooldownDetails.enabled ~= 0 and
            cooldownDetails.duration and cooldownDetails.duration > minDuration and
-           cooldownDetails.texture
+           cooldownDetails.texture and
+           cooldownDetails.start > 0
 end
 
 _G.CooldownData = CooldownData

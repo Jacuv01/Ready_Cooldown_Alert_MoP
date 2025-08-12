@@ -348,15 +348,27 @@ function FiltersUI:FindSuggestions(searchText)
     local searchLower = searchText:lower()
     
     if tonumber(searchText) then
-        local spellID = tonumber(searchText)
-        local spellName = GetSpellInfo(spellID)
+        local id = tonumber(searchText)
+        
+        local spellName = GetSpellInfo(id)
         if spellName then
-            local spellTexture = GetSpellTexture(spellID)
+            local spellTexture = GetSpellTexture(id)
             table.insert(suggestions, {
                 name = spellName, 
-                id = spellID, 
+                id = id, 
                 texture = spellTexture,
                 type = "spell"
+            })
+        end
+        
+        local itemName = GetItemInfo(id)
+        if itemName then
+            local _, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(id)
+            table.insert(suggestions, {
+                name = itemName,
+                id = id,
+                texture = itemTexture,
+                type = "item"
             })
         end
     end

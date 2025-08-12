@@ -179,6 +179,15 @@ function CooldownProcessor:ProcessWatchedAction(id, watchData)
                 end
                 
                 cooldowns[id] = memoizedGetCooldownDetails
+            else
+                if cooldownDetails.type == "item" and cooldownDetails.duration > MIN_COOLDOWN_DURATION and cooldownDetails.start == 0 then
+                    watching[id] = {
+                        timestamp = GetTime(),
+                        actionType = watchData.actionType,
+                        texture = watchData.texture or cooldownDetails.texture,
+                        extraData = watchData.extraData
+                    }
+                end
             end
         end
     end

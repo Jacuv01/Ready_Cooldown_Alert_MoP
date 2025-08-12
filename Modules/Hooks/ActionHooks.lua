@@ -28,6 +28,13 @@ function ActionHooks:HookUseAction()
             local spellID = self:GetItemSpellID(itemID)
             local texture = GetActionTexture(slot)
             
+            if spellID and itemID then
+                local SpellHooks = rawget(_G, "SpellHooks")
+                if SpellHooks and SpellHooks.AddItemSpellMapping then
+                    SpellHooks:AddItemSpellMapping(spellID, itemID)
+                end
+            end
+            
             self:TriggerCallbacks("item", itemID, texture, {
                 spellID = spellID,
                 slot = slot,
@@ -44,6 +51,13 @@ function ActionHooks:HookUseInventoryItem()
         if itemID then
             local spellID = self:GetItemSpellID(itemID)
             local texture = GetInventoryItemTexture("player", slot)
+            
+            if spellID and itemID then
+                local SpellHooks = rawget(_G, "SpellHooks")
+                if SpellHooks and SpellHooks.AddItemSpellMapping then
+                    SpellHooks:AddItemSpellMapping(spellID, itemID)
+                end
+            end
             
             self:TriggerCallbacks("item", itemID, texture, {
                 spellID = spellID,
