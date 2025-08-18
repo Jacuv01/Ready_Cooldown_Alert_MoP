@@ -149,7 +149,13 @@ function FiltersUI:CreateSuggestionsFrame()
         local icon = btn:CreateTexture(nil, "ARTWORK")
         icon:SetSize(16, 16)
         icon:SetPoint("LEFT", btn, "LEFT", 2, 0)
-        icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+        
+        if ReadyCooldownAlertDB and ReadyCooldownAlertDB.enableTextureZoom then
+            icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+        else
+            icon:SetTexCoord(0, 1, 0, 1)
+        end
+        
         btn.icon = icon
         
         local text = btn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -486,6 +492,22 @@ function FiltersUI:ClearAllFilters()
         local FilterProcessor = rawget(_G, "FilterProcessor")
         if FilterProcessor and FilterProcessor.RefreshFilters then
             FilterProcessor:RefreshFilters()
+        end
+    end
+end
+
+function FiltersUI:UpdateAllSuggestionIcons()
+    if not suggestionsFrame or not suggestionsFrame.buttons then
+        return
+    end
+    
+    for _, btn in pairs(suggestionsFrame.buttons) do
+        if btn.icon then
+            if ReadyCooldownAlertDB and ReadyCooldownAlertDB.enableTextureZoom then
+                btn.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+            else
+                btn.icon:SetTexCoord(0, 1, 0, 1)
+            end
         end
     end
 end

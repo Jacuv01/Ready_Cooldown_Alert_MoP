@@ -55,7 +55,7 @@ function LayoutManager:GetPositionButtonPosition()
     local constants = GetUIConstants()
     local positionSection = self:GetPositionSlidersPosition()
     local sectionEndY = positionSection.startY - (positionSection.sliderCount * constants.SLIDER_HEIGHT)
-    local buttonX = (constants.WINDOW_WIDTH / 2) - (constants.BUTTON_WIDTH / 2) - 20
+    local buttonX = 30
     
     return {
         y = sectionEndY - 15,
@@ -68,11 +68,22 @@ end
 function LayoutManager:GetShowSpellNamesCheckboxPosition()
     local constants = GetUIConstants()
     local positionButtonPos = self:GetPositionButtonPosition()
-    local checkboxX = positionButtonPos.x + constants.BUTTON_WIDTH + 20
+    local checkboxX = positionButtonPos.x + constants.BUTTON_WIDTH + 50
     
     return {
         y = positionButtonPos.y,
         x = checkboxX,
+        spacing = 30
+    }
+end
+
+function LayoutManager:GetTextureZoomCheckboxPosition()
+    local constants = GetUIConstants()
+    local spellNamesPos = self:GetShowSpellNamesCheckboxPosition()
+    
+    return {
+        x = spellNamesPos.x,
+        y = spellNamesPos.y - 30,
         spacing = 30
     }
 end
