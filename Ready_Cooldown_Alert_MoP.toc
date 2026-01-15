@@ -1,4 +1,4 @@
-## Interface: 50500
+## Interface: 50503
 ## Title: Ready Cooldown Alert (MoP)
 ## Notes: Alerts you when your abilities are ready to use. (Mists of Pandaria compatible)
 ## Author: Jacuv
